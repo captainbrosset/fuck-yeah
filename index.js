@@ -85,7 +85,7 @@ server.get(new RegExp("^/(.*)(?:.jpg)?$"), function(request, response, match) {
         return;
       }
       var h = features.height < 100 ? features.height : 100
-        , w = features.width * 2 / 3; // < 500 ? features.width : 500
+        , w = features.width * 2 / 3 // < 500 ? features.width : 500
         , args = [
             '-strokewidth','5',
             '-stroke','black',
