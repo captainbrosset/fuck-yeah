@@ -12,12 +12,12 @@ function fetch(query,cb){
   req({uri:google}, function (e, resp, body) {
     results = JSON.parse(body)['responseData']['results'];
     var result = results[0];
-    /*for(var i = 0; i < results.length; i ++) {
+    for(var i = 0; i < results.length; i ++) {
       if(parseInt(results[i].width, 10) >= 500) {
         result = results[i];
         break;
       }
-    }*/
+    }
 
     if(result)
       cb(result['unescapedUrl'])
