@@ -87,12 +87,12 @@ server.get(new RegExp("^/(.*)(?:.jpg)?$"), function(request, response, match) {
       var h = features.height < 100 ? features.height : 100
         , w = features.width < 500 ? features.width : 500
         , args = [
-            '-strokewidth','2',
+            '-strokewidth','5',
             '-stroke','black',
             '-background','transparent',
             '-fill','white',
             '-gravity','center',
-            '-size',w+'x'+h,
+            '-size',(2*w)+'x'+(2*h),
             "caption:"+unescape(msg),
             output,
             '+swap',
