@@ -10,7 +10,14 @@ im     = require('imagemagick')
 function fetch(query,cb){
   var google = 'http://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&q=' + encodeURI(query)
   req({uri:google}, function (e, resp, body) {
-    result = JSON.parse(body)['responseData']['results'][0]
+    results = JSON.parse(body)['responseData']['results'];
+    var result = results[0];
+    /*for(var i = 0; i < results.length; i ++) {
+      if(parseInt(results[i].width, 10) >= 500) {
+        result = results[i];
+        break;
+      }
+    }*/
 
     if(result)
       cb(result['unescapedUrl'])
@@ -71,8 +78,12 @@ server.get(new RegExp("^/(.*)(?:.jpg)?$"), function(request, response, match) {
   var output = "/tmp/fuck-" + Math.floor(Math.random(10000000)*10000000) + '.jpg'
   download(match, output, function(){
     im.identify(output,function(err,features){
-      if (err)
+      console.log("doing stuff")
+      if (err) {
+        console.log(err)
+        response.simpleHtml(200, 'fuuuuuuuuuuucked');
         return;
+      }
       var h = features.height < 100 ? features.height : 100
         , w = features.width < 500 ? features.width : 500
         , args = [
