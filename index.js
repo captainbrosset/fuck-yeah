@@ -85,14 +85,14 @@ server.get(new RegExp("^/(.*)(?:.jpg)?$"), function(request, response, match) {
         return;
       }
       var h = features.height < 100 ? features.height : 100
-        , w = features.width < 500 ? features.width : 500
+        , w = features.width * 2 / 3; // < 500 ? features.width : 500
         , args = [
             '-strokewidth','5',
             '-stroke','black',
             '-background','transparent',
             '-fill','white',
             '-gravity','center',
-            '-size',(2*w)+'x'+(2*h),
+            '-size',(w)+'x'+(h),
             "caption:"+unescape(msg),
             output,
             '+swap',
