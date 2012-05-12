@@ -11,6 +11,7 @@ function fetch(query,cb){
   var google = 'http://ajax.googleapis.com/ajax/services/search/images?v=1.0&rsz=8&q=' + encodeURI(query)
   req({uri:google}, function (e, resp, body) {
     results = JSON.parse(body)['responseData']['results'];
+    console.log("got " + results.length + " results from google for " +query)
     var result = results[0];
     for(var i = 0; i < results.length; i ++) {
       if(parseInt(results[i].width, 10) >= 500) {
@@ -46,18 +47,19 @@ function download(match, output, addText){
       })
 
       res.on('end', function(){
+        console.log("file downloaded, saving to disk " + output)
         fs.writeFile(output, img, 'binary', function (err) {
           if (err) throw err
         })
-        addText()
+        addText();
       })
     })
   })
 }
 
 server.get("/", function(request, response){
-  response.simpleHtml(200, 'fuck yeah / by <a href="http://twitter.com/holman">@holman</a>.'+
-    '<p>api: use <b>fuckyeah.herokuapp.com/[your-query]</b> and shit.</p>'
+  response.simpleHtml(200, 'fuck yeah.'+
+    '<p>api: use <b>/[your-query]</b> and shit.</p>'
   );
 })
 
@@ -65,31 +67,31 @@ server.get("/favicon.ico", function(request, response){
   return ""
 })
 
-server.get(new RegExp("^/(.*)(?:.jpg)?$"), function(request, response, match) {
+server.get(new RegExp("/([^\.]*)(\.[a-zA-Z]+)?"), function(request, response, match, extension) {
   var msg   = ""
     , match = escape(match)
     , chars = match.length
+    , extension = extension || ".jpg";
+
+  console.log("searching for " + match + "(extension " + extension + ")"); 
 
   if(chars < 7)
     msg = 'FUCK YEAH ' + match.toUpperCase() + ''
   else
     msg = 'FUCK YEAH \n' + match.toUpperCase() + ''
 
-  var output = "/tmp/fuck-" + Math.floor(Math.random(10000000)*10000000) + '.jpg'
+  var output = "/tmp/fuck-" + Math.floor(Math.random(10000000)*10000000) + extension;
   download(match, output, function(){
     im.identify(output,function(err,features){
-      console.log("doing stuff")
       if (err) {
         console.log(err)
-        response.simpleHtml(200, 'fuuuuuuuuuuucked');
+        response.simpleHtml(200, err);
         return;
       }
       var h = features.height < 100 ? features.height : 100
-        , w = features.width * 2 / 3 // < 500 ? features.width : 500
+        , w = features.width * 4 / 5 // < 500 ? features.width : 500
         , args = [
-            '-strokewidth','5',
-            '-stroke','black',
-            '-background','transparent',
+            '-background','black',
             '-fill','white',
             '-gravity','center',
             '-size',(w)+'x'+(h),
